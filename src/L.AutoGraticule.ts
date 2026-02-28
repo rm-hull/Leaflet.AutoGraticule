@@ -125,16 +125,30 @@ export default class AutoGraticule extends LayerGroup {
         }
     }
 
-    buildXLine(x: number): Polyline {
-        const bottomLL = new LatLng(this._bounds.getSouth(), x);
-        const topLL = new LatLng(this._bounds.getNorth(), x);
+    buildXLine(x: number): L.Polyline {
+        const south = this._bounds.getSouth();
+        const north = this._bounds.getNorth();
+        const latSpan = north - south;
+
+        const extendedSouth = south - latSpan;
+        const extendedNorth = north + latSpan;
+
+        const bottomLL = new LatLng(extendedSouth, x);
+        const topLL = new LatLng(extendedNorth, x);
 
         return new Polyline([bottomLL, topLL], this.lineStyle);
     }
 
     buildYLine(y: number): L.Polyline {
-        const leftLL = new LatLng(y, this._bounds.getWest());
-        const rightLL = new LatLng(y, this._bounds.getEast());
+        const west = this._bounds.getWest();
+        const east = this._bounds.getEast();
+        const lngSpan = east - west;
+
+        const extendedWest = west - lngSpan;
+        const extendedEast = east + lngSpan;
+
+        const leftLL = new LatLng(y, extendedWest);
+        const rightLL = new LatLng(y, extendedEast);
 
         return new Polyline([leftLL, rightLL], this.lineStyle);
     }
